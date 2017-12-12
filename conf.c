@@ -151,8 +151,11 @@ parse_conf(const char *config_path)
 	char *word;
 	char *data;
 	FILE *conf;
-	char line[2048];
+	char *line = NULL;
 	int lineno = 0;
+	ssize_t linelen;
+	size_t linecap = 0;
+
 
 	conf = fopen(config_path, "r");
 	if (conf == NULL) {
@@ -163,9 +166,7 @@ parse_conf(const char *config_path)
 		/* NOTREACHED */
 	}
 
-	while (!feof(conf)) {
-		if (fgets(line, sizeof(line), conf) == NULL)
-			break;
+	while ((linelen = getline(&line, &linecap, conf)) > 0) {
 		lineno++;
 
 		chomp(line);
@@ -241,5 +242,6 @@ parse_conf(const char *config_path)
 		/* NOTREACHED */
 	}
 
+	free(line);
 	fclose(conf);
 }
