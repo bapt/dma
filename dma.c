@@ -138,20 +138,20 @@ static int
 do_alias(struct queue *queue, const char *addr)
 {
 	struct alias *al;
-        struct stritem *sit;
+	struct stritem *sit;
 	int aliased = 0;
 
-        LIST_FOREACH(al, &aliases, next) {
-                if (strcmp(al->alias, addr) != 0)
-                        continue;
+	LIST_FOREACH(al, &aliases, next) {
+		if (strcmp(al->alias, addr) != 0)
+			continue;
 		SLIST_FOREACH(sit, &al->dests, next) {
 			if (add_recp(queue, sit->str, EXPAND_ADDR) != 0)
 				return (-1);
 		}
 		aliased = 1;
-        }
+	}
 
-        return (aliased);
+	return (aliased);
 }
 
 int
