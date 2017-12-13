@@ -135,25 +135,6 @@ set_from(struct queue *queue, const char *osender)
 }
 
 static int
-read_aliases(void)
-{
-	yyin = fopen(config.aliases, "r");
-	if (yyin == NULL) {
-		/*
-		 * Non-existing aliases file is not a fatal error
-		 */
-		if (errno == ENOENT)
-			return (0);
-		/* Other problems are. */
-		return (-1);
-	}
-	if (yyparse())
-		return (-1);	/* fatal error, probably malloc() */
-	fclose(yyin);
-	return (0);
-}
-
-static int
 do_alias(struct queue *queue, const char *addr)
 {
 	struct alias *al;
@@ -468,7 +449,7 @@ main(int argc, char **argv)
 		logident_base = "dma";
 		setlogident("%s", logident_base);
 
-		if (read_aliases() != 0)
+		if (read_aliases(config.aliases) != 0)
 			errx(EX_SOFTWARE, "could not parse aliases file `%s'", config.aliases);
 		exit(EX_OK);
 	}
@@ -593,7 +574,7 @@ skipopts:
 		return (0);
 	}
 
-	if (read_aliases() != 0)
+	if (read_aliases(config.aliases) != 0)
 		errlog(EX_SOFTWARE, "could not parse aliases file `%s'", config.aliases);
 
 	if ((sender = set_from(&queue, sender)) == NULL)

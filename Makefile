@@ -37,7 +37,7 @@ YACC?=		yacc
 LEX?=		lex
 LN?=		ln
 
-OBJS=	aliases_parse.o aliases_scan.o base64.o conf.o crypto.o
+OBJS=	aliases.o base64.o conf.o crypto.o
 OBJS+=	dma.o dns.o local.o mail.o net.o spool.o util.o
 OBJS+=	dfcompat.o
 
@@ -83,12 +83,6 @@ install-etc:
 		echo ${INSTALL} -m 640 -o root -g mail auth.conf ${DESTDIR}${CONFDIR}; \
 		${INSTALL} -m 640 -o root -g mail auth.conf ${DESTDIR}${CONFDIR}; \
 	fi
-
-aliases_parse.c: aliases_parse.y
-	${YACC} -d -o aliases_parse.c aliases_parse.y
-
-aliases_scan.c: aliases_scan.l
-	${LEX} -t aliases_scan.l > aliases_scan.c
 
 .SUFFIXES: .c .o
 

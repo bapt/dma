@@ -173,11 +173,8 @@ extern const char *logident_base;
 extern char neterr[ERRMSG_SIZE];
 extern char errmsg[ERRMSG_SIZE];
 
-/* aliases_parse.y */
-int yyparse(void);
-int yywrap(void);
-int yylex(void);
-extern FILE *yyin;
+/* aliases.c */
+int read_aliases(const char *);
 
 /* conf.c */
 void trim_line(char *);
