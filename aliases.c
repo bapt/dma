@@ -56,6 +56,21 @@ parse_alias_val(struct alias *al, char *val)
 		val[strlen(val) -1] = '\0';
 	}
 
+	if (strncmp(":include:", val, 8) == 0) {
+		/* XXX read_include_file(val + 8); */
+		return;
+	}
+
+	if (strncmp("error:", val, 6) == 0) {
+		warnx("Unsupported 'error:'");
+		return;
+	}
+
+	if (strncmp("maildir:", val, 8) == 0) {
+		warnx("Unsupported 'maildir:'");
+		return;
+	}
+
 	it = calloc(1, sizeof(*it));
 	if (it == NULL)
 		err(1, "calloc()");
