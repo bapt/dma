@@ -148,3 +148,34 @@ read_aliases(const char *alias_file)
 	fclose(conf);
 	return (0);
 }
+
+struct alias *
+read_dotforward(const char *home)
+{
+	struct alias *al;
+	char dotforward[PATH_MAX];
+	FILE *f;
+	ssize_t linelen;
+	size_t linecap = 0;
+	char *walk, *line = NULL;
+
+	snprintf(dotforward, sizeof(dotforward), "%s/.forward", home);
+	f = fopen(dotforward, "r");
+	if (f == NULL)
+		return (NULL);
+
+	al = calloc(1, sizeof(*al));
+	if (al == NULL)
+		err(1, "calloc()");
+	while ((linelen = getline(&line, &linecap, f)) > 0) {
+		walk = line;
+		/* eliminate comments */
+		strsep(&walk, "#");
+		/* eliminate empty lines */
+		if (line[strspn(line, " \t\n")] == '\0')
+			continue;
+		parse_alias_val(al, line);
+	}
+	free(line);
+	return (al);
+}

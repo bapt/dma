@@ -158,6 +158,8 @@ int
 add_recp(struct queue *queue, const char *str, int expand)
 {
 	struct qitem *it, *tit;
+	struct alias *al;
+	struct stritem *sit;
 	struct passwd *pw;
 	char *host;
 	int aliased = 0;
@@ -209,7 +211,13 @@ add_recp(struct queue *queue, const char *str, int expand)
 				pw = getpwnam(it->addr);
 				if (pw == NULL)
 					goto out;
-				/* XXX read .forward */
+				al = read_dotforward(pw->pw_dir);
+				if (al != NULL) {
+					SLIST_FOREACH(sit, &al->dests, next) {
+						if (add_recp(queue, sit->str, EXPAND_ADDR) != 0)
+							goto out;
+					}
+				}
 				endpwent();
 			}
 		}

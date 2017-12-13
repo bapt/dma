@@ -175,6 +175,7 @@ extern char errmsg[ERRMSG_SIZE];
 
 /* aliases.c */
 int read_aliases(const char *);
+struct alias *read_dotforward(const char *);
 
 /* conf.c */
 void trim_line(char *);
