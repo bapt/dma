@@ -137,7 +137,11 @@ deliver_local(struct qitem *it)
 	off_t mboxlen;
 	time_t now = time(NULL);
 
-	error = snprintf(fn, sizeof(fn), "%s/%s", _PATH_MAILDIR, it->addr);
+	if (*it->addr == '/') {
+		error = snprintf(fn, sizeof(fn), "%s", it->addr);
+	} else {
+		error = snprintf(fn, sizeof(fn), "%s/%s", _PATH_MAILDIR, it->addr);
+	}
 	if (error < 0 || (size_t)error >= sizeof(fn)) {
 		syslog(LOG_NOTICE, "local delivery deferred: %m");
 		return (1);
@@ -157,6 +161,11 @@ retry:
 		switch (e) {
 		case EACCES:
 		case ENOENT:
+			if (*it->addr == '/') {
+				syslog(LOG_ERR, "local delivery deferred: can "
+				    "not open `%s': %s", fn, strerror(e));
+				return (1);
+			}
 			/*
 			 * The file does not exist or we can't access it.
 			 * Call dma-mbox-create to create it and fix permissions.

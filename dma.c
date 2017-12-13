@@ -200,6 +200,10 @@ add_recp(struct queue *queue, const char *str, int expand)
 				return (-1);
 			if (aliased) {
 				LIST_REMOVE(it, next);
+			} else if (*it->addr == '/') {
+				syslog(LOG_ERR, "file");
+			} else if (*it->addr == '|') {
+				syslog(LOG_ERR, "command");
 			} else {
 				/* Local destination, check */
 				pw = getpwnam(it->addr);
